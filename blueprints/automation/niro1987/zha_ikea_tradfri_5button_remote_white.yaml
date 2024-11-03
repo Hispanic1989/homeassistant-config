@@ -49,6 +49,16 @@ blueprint:
           unit_of_measurement: milliseconds
           mode: slider
       default: 500
+    steps:
+      name: Long-Press-Steps
+      description: The Steps in which update the light steps when the button is held.
+      selector:
+        number:
+          min: 1
+          max: 20
+          step: 1
+          mode: slider
+      default: 10
 
 mode: restart
 max_exceeded: silent
@@ -56,6 +66,7 @@ max_exceeded: silent
 variables:
   var_light: !input light
   var_speed: !input speed
+  var_steps: !input steps
 
 trigger:
   - platform: event
@@ -110,7 +121,7 @@ action:
                   target:
                     entity_id: !input light
                   data:
-                    brightness_step_pct: 10
+                    brightness_step_pct: !input steps
                     transition: "{{ (var_speed / 1000)|float }}"
                 - delay:
                     milliseconds: !input speed
@@ -139,7 +150,7 @@ action:
                   target:
                     entity_id: !input light
                   data:
-                    brightness_step_pct: -10
+                    brightness_step_pct: "{{ (var_steps*(-1)) }}"
                     transition: "{{ (var_speed / 1000)|float }}"
                 - delay:
                     milliseconds: !input speed
